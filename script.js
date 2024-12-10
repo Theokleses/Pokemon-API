@@ -24,33 +24,51 @@ async function loadPokemon(startPokemon, append = false) {
 }
 
 function getPokemon() {
-  let query = document.getElementById("search-pokemon").value.toLowerCase();
+  let query = document.getElementById("search-pokemon").value.toLowerCase().trim();
   let content = document.getElementById("content");
-  let filteredPokemon = allPokemon.filter((pokemon) => pokemon.name.toLowerCase().includes(query));
-    
-  if (query.trim() !== "") {
+  content.innerHTML = "";
+
+  if (query.length >= 3) {
+    let filteredPokemon = allPokemon.filter(p => p.name.toLowerCase().includes(query));
     isFiltering = true;
     document.getElementById("load-more").classList.add("d_none");
-    content.innerHTML = "";
     if (filteredPokemon.length > 0) {
       renderPokemon(filteredPokemon);
     } else {
-      content.innerHTML = `<p>Kein Pokémon gefunden!</p>`;
+      content.innerHTML = "<p>Kein Pokémon gefunden!</p>";
     }
   } else {
     isFiltering = false;
     document.getElementById("load-more").classList.remove("d_none");
-    startPokemon = 0; 
-    allPokemon = []; 
-    content.innerHTML = ""; 
-    loadPokemon(startPokemon);
+    if (query.length === 0) {
+      startPokemon = 0;
+      allPokemon = [];
+      loadPokemon(startPokemon);
+    } else {
+      content.innerHTML = "<p>Bitte mindestens 3 Buchstaben eingeben!</p>";
+    }
   }
 }
 
 async function loadPokemonDetails(url) {
   let response = await fetch(url);
   let pokemonDetails = await response.json();
-  console.log(pokemonDetails);
+
+  let speciesResponse = await fetch(pokemonDetails.species.url);
+  let speciesDetails = await speciesResponse.json();
+  let evolutionChainResponse = await fetch(speciesDetails.evolution_chain.url);
+  let evolutionChainDetails = await evolutionChainResponse.json();
+
+  let evoChain = [];
+  let currentEvo = evolutionChainDetails.chain;
+  while (currentEvo) {
+    let id = currentEvo.species.url.split("/").filter(Boolean).pop();
+    let spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+    evoChain.push({ name: currentEvo.species.name, spriteUrl });
+    currentEvo = currentEvo.evolves_to[0];
+  }
+
+  pokemonDetails.evolutionChain = evoChain;
   return pokemonDetails;
 }
 
@@ -66,14 +84,8 @@ async function renderPokemon(pokemonList, append = false) {
     let gifUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`;
     let details = await loadPokemonDetails(pokemon.url);
     let bgColor = typeColors[details.types[0].type.name] || "#ffffff";
-    let typeIconsHTML = details.types
-      .map(
-        (typeInfo) =>
-          `<div class="type-icon" style="background-color: ${bgColor}">
-              <img class="icons" src="${typeIcons[typeInfo.type.name]}" alt="${typeInfo.type.name}" />
-           </div>`
-      )
-      .join("");
+    let typeIconsHTML = renderIconsTemplates(details.types, bgColor);
+    
     pokemonHTML = renderPokemonTemplate({id,name: pokemon.name,gifUrl,bgColor,typeIconsHTML,});
     content.innerHTML += pokemonHTML;
   }
@@ -91,22 +103,10 @@ async function renderPokeDialogContent(imgUrl, id, name, typeIconsHTML, bgColor)
   let weight = details.weight / 10;
   let baseExperience = details.base_experience;
   let abilities = details.abilities.map((ability) => ability.ability.name).join(", ");
-  let statsHTML = details.stats
-    .map(
-      (stat) => `
-        <div class="stat-bar">
-          <span class="stat-name">${stat.stat.name.toUpperCase()}</span>
-          <div class="bar-container">
-            <div class="bar-filled" style="width: ${Math.min(stat.base_stat, 120) / 1.2}%;"></div>
-            <div class="bar-empty" style="width: ${Math.max(120 - stat.base_stat, 0) / 1.2}%;"></div>
-          </div>
-          <span class="stat-value">${stat.base_stat}</span>
-        </div>
-      `
-    )
-    .join("");
-
-  dialogHTML = renderPokeDialogTemplate({imgUrl,id,name,typeIconsHTML,bgColor,height,weight,baseExperience,abilities,statsHTML,});
+  let statsHTML = renderStatsTemplates(details.stats)
+  let evoChainHTML = renderEvolutionChainTemplate(details.evolutionChain)
+  
+  dialogHTML = renderPokeDialogTemplate({imgUrl,id,name,typeIconsHTML,bgColor,height,weight,baseExperience,abilities,statsHTML,evoChainHTML});
   document.getElementById("overlay").classList.remove("d_none");
   document.getElementById("img-fullsize").innerHTML = dialogHTML;
 }
@@ -123,14 +123,7 @@ async function showPokemonByIndex(index) {
   let details = await loadPokemonDetails(pokemon.url);
   let imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${index + 1}.gif`;
   let bgColor = typeColors[details.types[0].type.name] || "#ffffff";
-  let typeIconsHTML = details.types
-    .map(
-      (typeInfo) =>
-        `<div class="type-icon" style="background-color: ${bgColor}">
-          <img class="icons" src="${typeIcons[typeInfo.type.name]}" alt="${typeInfo.type.name}" />
-        </div>`
-    )
-    .join("");
+  let typeIconsHTML = renderIconsTemplates(details.types, bgColor);
 
   renderPokeDialogContent(imgUrl, index + 1, pokemon.name, typeIconsHTML, bgColor);
 }
@@ -147,8 +140,11 @@ function backPokemon() {
   showPokemonByIndex(currentIndex);
 }
 
-function closeOverlay() {
-  document.getElementById("overlay").classList.add("d_none");
+function closeOverlay(event) {
+  let overlay = document.getElementById("overlay");
+  if (event.target === overlay) { 
+    overlay.classList.add("d_none");
+  }
 }
 
 function loadMorePokemon() {

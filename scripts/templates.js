@@ -1,4 +1,4 @@
-function renderPokeDialogTemplate({ imgUrl, id, name, typeIconsHTML, bgColor, height, weight, baseExperience, abilities, statsHTML }) {
+function renderPokeDialogTemplate({ imgUrl, id, name, typeIconsHTML, bgColor, height, weight, baseExperience, abilities, statsHTML, evoChainHTML }) {
     return `
       <div class="poke-container" style="background-color: ${bgColor}">
         <div class="poke-header">
@@ -31,7 +31,7 @@ function renderPokeDialogTemplate({ imgUrl, id, name, typeIconsHTML, bgColor, he
             ${statsHTML}
           </div>
           <div class="tab-section" id="evo-chain" style="display: none;">
-            <p>Evo-Chain content goes here</p>
+            ${evoChainHTML}
           </div>
         </div>
         <div class="footer-overlay">
@@ -61,4 +61,45 @@ function renderPokeDialogTemplate({ imgUrl, id, name, typeIconsHTML, bgColor, he
         </div>
       </div>
     `;
+  }
+
+  function renderEvolutionChainTemplate(evolutionChain) {
+    return evolutionChain
+      .map(
+        (evo) => `
+          <div class="evo-chain-item">
+            <img src="${evo.spriteUrl}" alt="${evo.name}" />
+            <p>${evo.name}</p>
+          </div>
+        `
+      )
+      .join("");
+  }
+
+  function renderStatsTemplates(statBars) {
+    return statBars
+    .map(
+     (stat) => `
+       <div class="stat-bar">
+         <span class="stat-name">${stat.stat.name.toUpperCase()}</span>
+         <div class="bar-container">
+           <div class="bar-filled" style="width: ${Math.min(stat.base_stat, 120) / 1.2}%;"></div>
+           <div class="bar-empty" style="width: ${Math.max(120 - stat.base_stat, 0) / 1.2}%;"></div>
+         </div>
+         <span class="stat-value">${stat.base_stat}</span>
+       </div>
+     `
+   )
+   .join("");
+   }
+ 
+   function renderIconsTemplates(types, bgColor) {
+    return types
+      .map(
+        (typeInfo) => `
+          <div class="type-icon" style="background-color: ${bgColor}">
+            <img class="icons" src="${typeIcons[typeInfo.type.name]}" alt="${typeInfo.type.name}" />
+          </div>`
+      )
+      .join("");
   }
