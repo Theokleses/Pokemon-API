@@ -1,0 +1,380 @@
+html, body {
+    background-color: rgb(4, 23, 30); 
+    color: white; 
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding: 0; 
+    height: 100%; 
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: rgb(8, 32, 42); 
+    padding: 16px; 
+    color: white; 
+    align-items: center; 
+    margin-bottom: 16px;
+}
+header h1{
+    font-size: 24px;
+}
+
+input{
+    padding: 10px; 
+    font-size: 16px; 
+    width: 200px; 
+    height: 16px; 
+    border: 2px solid #fff; 
+    border-radius: 5px; 
+    background-color: rgb(8, 32, 42); 
+    color: white; 
+}
+main{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+h3 {
+  text-align: center;
+}
+footer {
+    background-color: rgb(8, 32, 42); 
+    padding: 20px; 
+    color: white; 
+    text-align: center; 
+}
+
+.header-logo{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.main-info{
+  margin-left: 16px;
+}
+.poke-ball{
+    height: 40px;
+}
+.type-icon {
+    width: 30px;
+    height: 30px;
+    margin: 0 5px; 
+    vertical-align: middle; 
+  }
+
+
+#content {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center; 
+}
+
+
+.poke-container {
+    border: 2px solid #ffffff; 
+    border-radius: 10px; 
+    overflow: hidden; 
+    width: 200px; 
+    background-color: #08202a; 
+    display: flex;
+    flex-direction: column; 
+    position: relative; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+.poke-container:hover {
+  transform: scale(1.10); 
+  z-index: 10; 
+  cursor: pointer !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 1); 
+}
+.poke-container:hover .poke-image {
+  box-shadow: 0 0 50px rgb(255, 255, 255, 1); 
+}
+.poke-header {
+    background-color: #08202a; 
+    padding: 5px;
+    text-align: center;
+    color: white; 
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    align-items: center;
+}
+
+.poke-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px; 
+    height: 100px;
+    position: relative;
+    overflow: hidden; 
+    transition: box-shadow 0.3s ease; 
+}
+
+.poke-footer {
+    background-color: #08202a; 
+    padding: 5px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.type-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 2px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    border-radius: 12px;
+    text-transform: capitalize;
+  }
+  
+  .type-badge.fire {
+    background-color: #ff4422;
+  }
+  .type-badge.water {
+    background-color: #3399ff;
+  }
+  .type-badge.grass {
+    background-color: #77cc55;
+  }
+  
+
+  .type-icon {
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 50%; 
+    background-color: var(--type-color); 
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .icons{
+    height: 20px;
+  }
+  .d_none{
+    display: none !important;
+  }
+
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+  }
+  #img-fullsize img {
+    max-width: 80%;
+    max-height: 80%;
+  }
+
+  
+  .arrows {
+    height: 50px;
+    width: 50px;
+    background-color: black;
+    cursor: pointer;
+  }
+  .arrows-rotate {
+    height: 50px;
+    width: 50px;
+    background-color: black;
+    -webkit-transform: rotate(180deg);
+    cursor: pointer;
+  }
+  .closeBotton {
+    height: 50px;
+    width: 50px;
+    background-color: black;
+    cursor: pointer;
+  }
+  .poke-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+  
+  .tab-button {
+    background-color: #08202a;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .tab-button:hover {
+    background-color: #1e4353;
+  }
+  
+  .tab-section {
+    margin-top: 20px;
+  }
+  
+  .stat-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 20px;
+  }
+  
+  .stat-name {
+    flex: 1;
+    text-align: right;
+    margin-right: 5px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .bar-container {
+    display: flex;
+    width: 40%;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-right: 7px;
+  }
+  
+  .bar-filled {
+    background-color: red;
+    height: 100%;
+  }
+  
+  .bar-empty {
+    background-color: lightgray;
+    height: 100%;
+  }
+  
+  .stat-value {
+    width: 50px;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    margin: -25px 0 0 -25px; 
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db; 
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 9999;
+  }
+  button {
+    display: block;
+    margin: 1rem auto;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  .main-sek{
+    flex: 1;
+  }
+.mg-right{
+  margin-right: 10px;
+}
+.container {
+  max-width: 1920px; 
+  margin: 0 auto; 
+  padding: 0 16px; 
+  align-items: center; 
+  display: flex; 
+  justify-content: space-between;
+}
+.container-footer{
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+#overlay .poke-image{
+  height: 200px;
+  width: 300px;
+}
+#overlay img{
+  width: 125px;
+}
+#overlay .poke-container{
+    transform: none;
+    box-shadow: none;
+    cursor: default;
+    width: 300px;
+  }
+  .close-button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.1rem 0.2rem;
+    border-radius: 50%;
+    position: absolute;
+    top: 1px;
+    right: 2px;
+}
+
+.close-button:hover {
+    background-color: #f2f2f2;
+    color: #ff0000;
+}
+
+.close-button:active {
+    background-color: #e0e0e0;
+}
+
+.close-icon {
+    display: inline-block;
+    line-height: 1;
+}
+.footer-overlay{
+  gap: 50px;
+  display: flex;
+}
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media(max-width:450px){
+   header h1{
+      font-size: 16px;
+    }
+    input{
+      width: 135px;
+    }
+   .poke-ball{
+    height: 30px;
+   } 
+  }

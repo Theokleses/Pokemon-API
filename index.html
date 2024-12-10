@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokedex</title>
+    <link rel="shortcut icon" href="./img/pokeball1.png" type="image/x-icon" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+      <div class="header-logo">
+        <img class="poke-ball" src="./img/pokeball2.png" />
+        <h1>Pokedex</h1>
+      </div>
+      <input
+        id="search-pokemon"
+        type="text"
+        placeholder="Suche Pokémon..."
+        oninput="getPokemon()"
+      />
+    </div>
+    </header>
+    <div id="loading-spinner" class="spinner d_none"></div>
+    <section class="main-sek">
+      <main id="content" class="container"></main>
+    </section>
+    <button id="load-more" onclick="loadMorePokemon()">Load More</button>
+    <div id="overlay" class="d_none">
+      <div id="img-fullsize"></div>
+    </div>
+    <footer>
+      <div class="container-footer">
+      <p>&copy; 2024 Pokémon Seite</p>
+    </div>
+    </footer>
+    <script src="script.js"></script>
+    <script src="scripts/templates.js"></script>
+    <script src="scripts/db.js"></script>
+  </body>
+</html>
