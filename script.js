@@ -1,5 +1,6 @@
 let isFiltering = false; 
 let allPokemon = []; 
+let currentIndex = 0;
 let startPokemon = 0; 
 const maxPokemon = 30; 
 
@@ -38,15 +39,21 @@ function getPokemon() {
       content.innerHTML = "<p>Kein Pokémon gefunden!</p>";
     }
   } else {
-    isFiltering = false;
-    document.getElementById("load-more").classList.remove("d_none");
-    if (query.length === 0) {
-      startPokemon = 0;
-      allPokemon = [];
-      loadPokemon(startPokemon);
-    } else {
-      content.innerHTML = "<p>Bitte mindestens 3 Buchstaben eingeben!</p>";
-    }
+    handleShortQuery(query, content);
+  }
+}
+
+function handleShortQuery(query, content) {
+  isFiltering = false;
+  document.getElementById("load-more").classList.remove("d_none");
+
+  if (query.length === 0) {
+    startPokemon = 0;
+    allPokemon = [];
+    loadPokemon(startPokemon);
+  } else {
+    content.innerHTML = "<p>Bitte mindestens 3 Buchstaben eingeben!</p>";
+    document.getElementById("load-more").classList.add("d_none");
   }
 }
 
@@ -54,8 +61,15 @@ async function loadPokemonDetails(url) {
   let response = await fetch(url);
   let pokemonDetails = await response.json();
 
-  let speciesResponse = await fetch(pokemonDetails.species.url);
+  pokemonDetails.evolutionChain = await loadPokemonChain(pokemonDetails.species.url); // Aufruf der ausgelagerten Funktion für Spezies und Evolution-Chain
+
+  return pokemonDetails;
+}
+
+async function loadPokemonChain(speciesUrl) {
+  let speciesResponse = await fetch(speciesUrl);
   let speciesDetails = await speciesResponse.json();
+  
   let evolutionChainResponse = await fetch(speciesDetails.evolution_chain.url);
   let evolutionChainDetails = await evolutionChainResponse.json();
 
@@ -68,8 +82,7 @@ async function loadPokemonDetails(url) {
     currentEvo = currentEvo.evolves_to[0];
   }
 
-  pokemonDetails.evolutionChain = evoChain;
-  return pokemonDetails;
+  return evoChain;
 }
 
 async function renderPokemon(pokemonList, append = false) {
@@ -128,8 +141,6 @@ async function showPokemonByIndex(index) {
   renderPokeDialogContent(imgUrl, index + 1, pokemon.name, typeIconsHTML, bgColor);
 }
 
-let currentIndex = 0;
-
 function nextPokemon() {
   currentIndex = (currentIndex + 1) % allPokemon.length;
   showPokemonByIndex(currentIndex);
@@ -142,7 +153,9 @@ function backPokemon() {
 
 function closeOverlay(event) {
   let overlay = document.getElementById("overlay");
-  if (event.target === overlay) { 
+  let closeButton = document.querySelector(".close-btn");
+
+  if (event.target == overlay || event.target == closeButton) { 
     overlay.classList.add("d_none");
   }
 }
