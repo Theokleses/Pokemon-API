@@ -225,6 +225,7 @@ footer {
 .dis-flex {
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .tab-button {
   background-color: #08202a;
@@ -335,7 +336,7 @@ button:hover {
 #overlay .poke-container {
   transform: none;
   box-shadow: none;
-  cursor: default;
+  cursor: default !important;
   width: 300px;
 }
 .close-button {
@@ -373,6 +374,27 @@ button:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.evo-chain-container {
+  display: flex;
+  justify-content: center;
+}
+.button-loading {
+  visibility: hidden;
+}
+
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 9999;
+}
+
+#loading-overlay.d_none {
+  display: none; 
 }
 
 @keyframes spin {

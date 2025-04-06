@@ -6,9 +6,10 @@ const maxPokemon = 30;
 
 
 loadPokemon();
-
 async function loadPokemon(startPokemon, append = false) {
   showSpinner(); 
+  toggleLoadMoreButton(true); 
+  // await new Promise(resolve => setTimeout(resolve, 5000));
   try {
     let response = await fetch(
       `https://pokeapi.co/api/v2/pokemon?limit=${maxPokemon}&offset=${startPokemon}`
@@ -20,7 +21,8 @@ async function loadPokemon(startPokemon, append = false) {
   } catch (error) {
     console.error("Fehler beim Laden der Pokémon:", error);
   } finally {
-    hideSpinner(); 
+    hideSpinner();
+    toggleLoadMoreButton(false); 
   }
 }
 
@@ -85,27 +87,46 @@ async function loadPokemonChain(speciesUrl) {
   return evoChain;
 }
 
+// async function renderPokemon(pokemonList, append = false) {
+//   const content = document.getElementById("content");
+//   if (!append) {
+//     content.innerHTML = "";
+//   }
+
+//   for (let i = 0; i < pokemonList.length; i++) {
+//     let pokemon = pokemonList[i];
+//     let id = pokemon.url.split("/").filter(Boolean).pop();
+//     let gifUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`;
+//     let details = await loadPokemonDetails(pokemon.url);
+//     let bgColor = typeColors[details.types[0].type.name] || "#ffffff";
+//     let typeIconsHTML = renderIconsTemplates(details.types, bgColor);
+    
+//     pokemonHTML = renderPokemonTemplate({id,name: pokemon.name,gifUrl,bgColor,typeIconsHTML,});
+//     content.innerHTML += pokemonHTML;
+//   }
+// }
 async function renderPokemon(pokemonList, append = false) {
   const content = document.getElementById("content");
   if (!append) {
     content.innerHTML = "";
   }
-
-  for (let i = 0; i < pokemonList.length; i++) {
-    let pokemon = pokemonList[i];
+  const promises = pokemonList.map(async (pokemon) => {
     let id = pokemon.url.split("/").filter(Boolean).pop();
     let gifUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`;
     let details = await loadPokemonDetails(pokemon.url);
     let bgColor = typeColors[details.types[0].type.name] || "#ffffff";
     let typeIconsHTML = renderIconsTemplates(details.types, bgColor);
-    
-    pokemonHTML = renderPokemonTemplate({id,name: pokemon.name,gifUrl,bgColor,typeIconsHTML,});
-    content.innerHTML += pokemonHTML;
-  }
+
+    return renderPokemonTemplate({id,name: pokemon.name,gifUrl,bgColor,typeIconsHTML,});
+  });
+
+  const pokemonHTMLArray = await Promise.all(promises);  
+
+  content.innerHTML += pokemonHTMLArray.join(""); 
 }
 
 function renderPokeDialog(element) {
-  let id = parseInt(element.getAttribute("data-id"), 10) - 1; // ID ist 1-basiert
+  let id = parseInt(element.getAttribute("data-id"), 10) - 1; 
   currentIndex = id;
   showPokemonByIndex(currentIndex);
 }
@@ -165,10 +186,20 @@ function loadMorePokemon() {
   loadPokemon(startPokemon, true); 
 }
 
+function toggleLoadMoreButton(isLoading) {
+  const loadMoreButton = document.getElementById("load-more");
+  if (loadMoreButton) {
+    loadMoreButton.disabled = isLoading;
+    loadMoreButton.classList.toggle("button-loading", isLoading);
+  }
+}
+
 function showSpinner() {
-  document.getElementById("loading-spinner").classList.remove("d_none");
+  document.getElementById("loading-overlay").classList.remove("d_none");
 }
 
 function hideSpinner() {
-  document.getElementById("loading-spinner").classList.add("d_none");
+  setTimeout(() => {
+    document.getElementById("loading-overlay").classList.add("d_none");
+  }, 500); 
 }
