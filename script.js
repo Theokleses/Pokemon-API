@@ -2,7 +2,7 @@ let isFiltering = false;
 let allPokemon = []; 
 let currentIndex = 0;
 let startPokemon = 0; 
-const maxPokemon = 30; 
+const maxPokemon = 300; 
 
 
 loadPokemon();
@@ -105,24 +105,28 @@ async function loadPokemonChain(speciesUrl) {
 //     content.innerHTML += pokemonHTML;
 //   }
 // }
+
 async function renderPokemon(pokemonList, append = false) {
   const content = document.getElementById("content");
-  if (!append) {
-    content.innerHTML = "";
-  }
-  const promises = pokemonList.map(async (pokemon) => {
-    let id = pokemon.url.split("/").filter(Boolean).pop();
-    let gifUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`;
-    let details = await loadPokemonDetails(pokemon.url);
-    let bgColor = typeColors[details.types[0].type.name] || "#ffffff";
-    let typeIconsHTML = renderIconsTemplates(details.types, bgColor);
-
-    return renderPokemonTemplate({id,name: pokemon.name,gifUrl,bgColor,typeIconsHTML,});
-  });
-
-  const pokemonHTMLArray = await Promise.all(promises);  
-
-  content.innerHTML += pokemonHTMLArray.join(""); 
+  if (!append) content.innerHTML = "";
+  
+  const pokemonHTMLArray = await Promise.all(pokemonList.map(async (pokemon) => {
+    const id = pokemon.url.split("/").filter(Boolean).pop();
+    const details = await loadPokemonDetails(pokemon.url);
+    const bgColor = typeColors[details.types[0].type.name] || "#ffffff";
+    
+    return renderPokemonTemplate({
+      id,
+      name: pokemon.name,
+      gifUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+        id > 649 ? '' : 'versions/generation-v/black-white/animated/'
+      }${id}.${id > 649 ? 'png' : 'gif'}`,
+      bgColor,
+      typeIconsHTML: renderIconsTemplates(details.types, bgColor)
+    });
+  }));
+  
+  content.innerHTML += pokemonHTMLArray.join("");
 }
 
 function renderPokeDialog(element) {
@@ -155,12 +159,16 @@ function showTab(tabId) {
 async function showPokemonByIndex(index) { 
   let pokemon = allPokemon[index];
   let details = await loadPokemonDetails(pokemon.url);
-  let imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${index + 1}.gif`;
+  let id = index + 1;
   let bgColor = typeColors[details.types[0].type.name] || "#ffffff";
   let typeIconsHTML = renderIconsTemplates(details.types, bgColor);
+  let imgUrl = id > 649 
+    ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+    : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${id}.gif`;
 
-  renderPokeDialogContent(imgUrl, index + 1, pokemon.name, typeIconsHTML, bgColor);
+  renderPokeDialogContent(imgUrl, id, pokemon.name, typeIconsHTML, bgColor);
 }
+
 
 function nextPokemon() {
   currentIndex = (currentIndex + 1) % allPokemon.length;
