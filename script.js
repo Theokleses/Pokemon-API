@@ -2,7 +2,7 @@ let isFiltering = false;
 let allPokemon = []; 
 let currentIndex = 0;
 let startPokemon = 0; 
-const maxPokemon = 300; 
+const maxPokemon = 30; 
 
 
 loadPokemon();
@@ -209,5 +209,5 @@ function showSpinner() {
 function hideSpinner() {
   setTimeout(() => {
     document.getElementById("loading-overlay").classList.add("d_none");
-  }, 500); 
+  }, 750); 
 }
