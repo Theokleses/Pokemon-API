@@ -17,6 +17,7 @@
       <input id="search-pokemon"type="text"placeholder="Suche Pokémon..."oninput="getPokemon()"/>
     </div>
     </header>
+    
     <div id="loading-overlay" class="d_none">
       <div class="spinner"></div>
     </div>
@@ -27,11 +28,18 @@
     <div id="overlay" class="d_none" onclick="closeOverlay(event)">
       <div id="img-fullsize"></div>
     </div>
+
     <footer>
       <div class="container-footer">
-      <p>&copy; 2024 Pokémon Seite</p>
+      <p><a href="impressum.html">Impressum</a></p>  
+      <a href="https://pokeapi.co/" target="_blank"  class="pokeapi-wrapper">
+        <img src="./img/pokeapi.png" alt="Pokeapi-logo" class="pokemon-api"
+        >
+      </a>
+      <p><a href="index.html">&copy; 2025 Pokémon Seite</a></p>
     </div>
     </footer>
+
     <script src="script.js"></script>
     <script src="scripts/templates.js"></script>
     <script src="scripts/db.js"></script>
