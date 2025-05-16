@@ -7,22 +7,22 @@ const maxPokemon = 30;
 
 loadPokemon();
 async function loadPokemon(startPokemon, append = false) {
-  showSpinner(); 
-  toggleLoadMoreButton(true); 
+  showSpinner();
+  toggleLoadMoreButton(true);
   // await new Promise(resolve => setTimeout(resolve, 5000));
   try {
     let response = await fetch(
       `https://pokeapi.co/api/v2/pokemon?limit=${maxPokemon}&offset=${startPokemon}`
     );
     let responseAsJson = await response.json();
-    let newPokemon = responseAsJson["results"]; 
-    allPokemon = allPokemon.concat(newPokemon); 
-    renderPokemon(newPokemon, append); 
+    let newPokemon = responseAsJson["results"];
+    allPokemon = allPokemon.concat(newPokemon);
+    await renderPokemon(newPokemon, append);
   } catch (error) {
     console.error("Fehler beim Laden der Pokémon:", error);
   } finally {
     hideSpinner();
-    toggleLoadMoreButton(false); 
+    toggleLoadMoreButton(false);
   }
 }
 
@@ -207,7 +207,5 @@ function showSpinner() {
 }
 
 function hideSpinner() {
-  setTimeout(() => {
-    document.getElementById("loading-overlay").classList.add("d_none");
-  }, 750); 
+  document.getElementById("loading-overlay").classList.add("d_none");
 }
